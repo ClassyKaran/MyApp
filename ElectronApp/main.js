@@ -8,7 +8,6 @@ import IdleTracker from './src/trackers/idleTracker.js';
 import ScreenshotTracker from './src/trackers/screenShotTracker.js';
 import ActiveWindowTracker from './src/trackers/activeWindowTracker.js';
 import ActivitySender from './src/trackers/activitySender.js';
-import SystemInfo from './src/services/systemInfo.js';
 import { enableAutostart } from './src/utils/autoStart.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,18 +35,18 @@ app.whenReady().then(() => {
 
 
 
-  const activityTracker = new ActivityTracker();
+  const activityTracker = ActivityTracker;
   activityTracker.start();
 
-  const idleTracker = new IdleTracker();
-  const activeWindowTracker = new ActiveWindowTracker();
-  const activitySender = new ActivitySender(activityTracker, idleTracker, activeWindowTracker, 5000);
+  const idleTracker = IdleTracker;
+  const activeWindowTracker = ActiveWindowTracker;
+  const activitySender = ActivitySender;
 
-  activityTracker.onActivity = () => {
+  activityTracker.onActivity.set(() => {
     idleTracker.recordActivity();
-  };
+  });
 
-  const screenshotTracker = new ScreenshotTracker();
+  const screenshotTracker = ScreenshotTracker;
   screenshotTracker.start();
 
   activitySender.start();

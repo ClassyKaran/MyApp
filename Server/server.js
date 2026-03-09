@@ -6,6 +6,7 @@ import http from "http";
 import { Server as IOServer } from "socket.io";
 
 import activityRoutes from './routes/activity.routes.js';
+import attendanceRoutes from './routes/attendance.routes.js';
 import screenshotRoutes from './routes/screenshot.routes.js';
 import initSocket from './sockets/socket.js';
 import errorHandler from './middlewares/errorHandler.js';
@@ -21,6 +22,7 @@ app.use(cors({ origin: process.env.FRONTEND_URL || "*", credentials: true }));
 connectDB();
 
 app.use('/api', activityRoutes);
+app.use('/api', attendanceRoutes);
 app.use('/api', screenshotRoutes);
 
 const httpServer = http.createServer(app);

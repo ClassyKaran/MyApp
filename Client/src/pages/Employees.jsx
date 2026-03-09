@@ -6,15 +6,12 @@ import ScreenshotGallery from '../components/ScreenshotGallery';
 import { Users, ArrowLeft } from 'lucide-react';
 import { useEmployees } from '../hooks/useEmployees';
 import { useEmployeeSummary } from '../hooks/useEmployeeSummary';
-import { useSocket } from '../hooks/useSocket';
 
 
 export default function Employees() {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-
   const { data: employees = [], isLoading: loading } = useEmployees();
   const { data: summary } = useEmployeeSummary(selectedEmployee?.hostname);
-  const { socketConnected } = useSocket();
 
 
   const handleSelectEmployee = (employee) => {
@@ -48,3 +45,9 @@ export default function Employees() {
     </div>
   );
 }
+            
+                                         
+
+                         
+
+                 

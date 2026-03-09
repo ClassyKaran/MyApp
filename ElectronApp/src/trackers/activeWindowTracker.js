@@ -1,22 +1,23 @@
 import activeWin from 'active-win';
 
-export default class ActiveWindowTracker {
-  constructor() {
-    this.activeWindow = 'Unknown';
-  }
+let activeWindow = 'Unknown';
 
-  async getActiveWindow() {
-    try {
-      const win = await activeWin.default();
-      this.activeWindow = win ? win.title : 'Unknown';
-      return this.activeWindow;
-    } catch (err) {
-      this.activeWindow = 'Unknown';
-      return this.activeWindow;
-    }
-  }
-
-  getLastActiveWindow() {
-    return this.activeWindow;
+export async function getActiveWindow() {
+  try {
+    const win = await activeWin.default();
+    activeWindow = win ? win.title : 'Unknown';
+    return activeWindow;
+  } catch (err) {
+    activeWindow = 'Unknown';
+    return activeWindow;
   }
 }
+
+export function getLastActiveWindow() {
+  return activeWindow;
+}
+
+export default {
+  getActiveWindow,
+  getLastActiveWindow
+};

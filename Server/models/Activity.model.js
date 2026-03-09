@@ -7,6 +7,7 @@ const ActivitySchema = new mongoose.Schema({
   mouseCount: { type: Number, default: 0 },
   activeWindow: { type: String },
   timestamp: { type: Date, default: Date.now },
+  status: { type: String, default: 'active' },
 });
 
 export default mongoose.model('Activity', ActivitySchema);

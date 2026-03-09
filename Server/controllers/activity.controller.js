@@ -25,6 +25,7 @@ export const postActivity = async (req, res, next) => {
       mouseCount,
       activeWindow,
       timestamp: activityTime,
+      status: isIdle ? 'idle' : 'active',
     });
 
     const employeeData = {

@@ -1,48 +1,61 @@
-class IdleTracker {
-  constructor() {
-    this.idleStartTime = null;
-    this.isIdle = false;
-    this.idleThresholdMs = 5 * 60 * 1000;
-    this.checkInterval = 5000;
-    this.lastActivityTime = Date.now();
-    this.startTracking();
-  }
+let idleStartTime = null;
+let isIdle = false;
+const idleThresholdMs = 5 * 60 * 1000;
+const checkInterval = 5000;
+let lastActivityTime = Date.now();
+let checkIntervalId = null;
 
-  startTracking() {
-    setInterval(() => {
-      this.checkIdleStatus();
-    }, this.checkInterval);
-  }
+function checkIdleStatus() {
+  const now = Date.now();
+  const timeSinceLastActivity = now - lastActivityTime;
 
-  recordActivity() {
-    this.lastActivityTime = Date.now();
-    if (this.isIdle) {
-      console.log('✅ User resumed activity');
-      this.isIdle = false;
-      this.idleStartTime = null;
-    }
-    global.idleStatus = { isIdle: false, duration: 0 };
-  }
-
-  checkIdleStatus() {
-    const now = Date.now();
-    const timeSinceLastActivity = now - this.lastActivityTime;
-
-    if (timeSinceLastActivity >= this.idleThresholdMs && !this.isIdle) {
-      console.log('💤 User is idle');
-      this.isIdle = true;
-      this.idleStartTime = now;
-      global.idleStatus = { isIdle: true, duration: timeSinceLastActivity };
-    } else if (this.isIdle) {
-      global.idleStatus = { isIdle: true, duration: timeSinceLastActivity };
-    } else {
-      global.idleStatus = { isIdle: false, duration: timeSinceLastActivity };
-    }
-  }
-
-  getIdleStatus() {
-    return global.idleStatus || { isIdle: false, duration: 0 };
+  if (timeSinceLastActivity >= idleThresholdMs && !isIdle) {
+    console.log('💤 User is idle');
+    isIdle = true;
+    idleStartTime = now;
+    global.idleStatus = { isIdle: true, duration: timeSinceLastActivity };
+  } else if (isIdle) {
+    global.idleStatus = { isIdle: true, duration: timeSinceLastActivity };
+  } else {
+    global.idleStatus = { isIdle: false, duration: timeSinceLastActivity };
   }
 }
 
-export default IdleTracker;
+export function startIdleTracker() {
+  if (checkIntervalId) return;
+  
+  checkIntervalId = setInterval(() => {
+    checkIdleStatus();
+  }, checkInterval);
+}
+
+export function stopIdleTracker() {
+  if (checkIntervalId) {
+    clearInterval(checkIntervalId);
+    checkIntervalId = null;
+    console.log('⏹️ Idle tracker stopped');
+  }
+}
+
+export function recordActivity() {
+  lastActivityTime = Date.now();
+  if (isIdle) {
+    console.log('✅ User resumed activity');
+    isIdle = false;
+    idleStartTime = null;
+  }
+  global.idleStatus = { isIdle: false, duration: 0 };
+}
+
+export function getIdleStatus() {
+  return global.idleStatus || { isIdle: false, duration: 0 };
+}
+
+startIdleTracker();
+
+export default {
+  start: startIdleTracker,
+  stop: stopIdleTracker,
+  recordActivity,
+  getIdleStatus
+};

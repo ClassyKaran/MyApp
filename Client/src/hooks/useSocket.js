@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import io from 'socket.io-client';
 import { toast } from 'react-toastify';
-import { config } from '../api/config';
+import { config } from '../api/endpoints';
 
 export function useSocket() {
   const [socketConnected, setSocketConnected] = useState(false);
