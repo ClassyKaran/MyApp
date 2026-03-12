@@ -7,6 +7,7 @@ export default function Sidebar() {
 
   const links = [
     { to: '/', label: 'Dashboard', icon: <Home size={18} /> },
+    { to: '/employees', label: 'Employees', icon: <Users size={20} /> },
     { to: '/Attendance', label: 'Attendance', icon: <Activity size={20} /> },
     { to: '/settings', label: 'Settings', icon: <Settings size={20} /> },
   ];

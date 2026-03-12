@@ -2,7 +2,7 @@ import React from 'react';
 import EmployeeCard from './EmployeeCard';
 import { Circle } from 'lucide-react';
 
-export default function EmployeeList({ employees, selectedEmployee, onSelect }) {
+export default function EmployeeList({ employees, selectedEmployee, onSelect, onViewLiveScreen }) {
   const groupedEmployees = {
     online: employees.filter((e) => e.status === 'online'),
     idle: employees.filter((e) => e.status === 'idle'),
@@ -21,6 +21,7 @@ export default function EmployeeList({ employees, selectedEmployee, onSelect }) 
                 employee={emp}
                 onSelect={onSelect}
                 isSelected={selectedEmployee?._id === emp._id}
+                onViewLiveScreen={onViewLiveScreen}
               />
             ))
           ) : (
@@ -39,6 +40,7 @@ export default function EmployeeList({ employees, selectedEmployee, onSelect }) 
                 employee={emp}
                 onSelect={onSelect}
                 isSelected={selectedEmployee?._id === emp._id}
+                onViewLiveScreen={onViewLiveScreen}
               />
             ))
           ) : (
@@ -57,6 +59,7 @@ export default function EmployeeList({ employees, selectedEmployee, onSelect }) 
                 employee={emp}
                 onSelect={onSelect}
                 isSelected={selectedEmployee?._id === emp._id}
+                onViewLiveScreen={onViewLiveScreen}
               />
             ))
           ) : (

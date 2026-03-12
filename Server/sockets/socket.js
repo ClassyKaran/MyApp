@@ -65,6 +65,25 @@ export default function initSocket(io) {
     socket.on('disconnect', () => {
       console.log('🚫 socket disconnected', socket.id);
     });
+
+    socket.on('request-screen-capture', (data) => {
+      console.log('📺 Screen capture requested for:', data.hostname);
+      io.emit('request-screen-capture', { hostname: data.hostname });
+    });
+
+    socket.on('stop-screen-capture', () => {
+      console.log('🛑 Stop screen capture requested');
+      io.emit('stop-screen-capture');
+    });
+
+    socket.on('screen-data', (data) => {
+      console.log('📺 Screen data received for:', data.hostname);
+      io.emit('screen-data', {
+        image: data.image,
+        hostname: data.hostname,
+        timestamp: data.timestamp
+      });
+    });
   });
 }
 

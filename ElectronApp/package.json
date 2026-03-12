@@ -1,24 +1,22 @@
 {
-  "name": "worktrack-lite",
+  "name": "KavyaShift",
   "version": "1.0.0",
-  "description": "Employee activity monitoring desktop app",
+  "description": "Employee activity monitoring Desktop app",
   "main": "main.js",
   "type": "module",
+  "author": "Karan Rajput <k4karanrajput@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ClassyKaran/KavyaShift_ExeFile.git"
+  },
   "scripts": {
     "start": "electron .",
     "build": "electron-builder"
   },
-  "author": "Your Name <karanrajput@gmail.com>",
   "devDependencies": {
     "electron": "^39.7.0",
     "electron-builder": "^26.8.1"
-  },
-  "build": {
-    "appId": "com.worktrack.lite",
-    "productName": "WorkTrackLite",
-    "files": [
-      "**/*"
-    ]
   },
   "dependencies": {
     "active-win": "^7.0.0",
@@ -27,6 +25,33 @@
     "dotenv": "^16.3.1",
     "screenshot-desktop": "^1.15.0",
     "sharp": "^0.34.5",
-    "uiohook-napi": "^1.5.4"
+    "socket.io-client": "^4.8.3",
+    "uiohook-napi": "^1.5.4",
+    "update-electron-app": "^3.1.2"
+  },
+  "build": {
+    "appId": "com.kavyashift",
+    "productName": "KavyaShift",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "publish": [
+      {
+        "provider": "github"
+      }
+    ]
   }
 }

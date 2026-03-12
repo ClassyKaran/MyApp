@@ -37,6 +37,13 @@ export const screenshotApi = {
     apiClient.get(`/screenshots/${hostname}?offset=${offset}&limit=${limit}`).then(res => res.data),
 };
 
+export const liveScreenApi = {
+  request: (hostname) => 
+    apiClient.post('/live-screen/request', { hostname }).then(res => res.data),
+  stop: () => 
+    apiClient.post('/live-screen/stop').then(res => res.data),
+};
+
 export const attendanceApi = {
   calculate: (startDate, endDate) => 
     apiClient.post('/attendance/calculate', { startDate, endDate }).then(res => res.data),

@@ -128,6 +128,8 @@ npm install
 # Create .env file with:
 # ⁢VITE_API_URL=http://localhost:5000/api
 # VITE_SOCKET_URL=http://localhost:5000
+# optionally for desktop updater:
+# UPDATE_REPO=yourUser/yourRepo
 npm run dev
 # Or build:
 npm run build
@@ -146,6 +148,8 @@ PORT=5000⁡
 ### Desktop App (.env)
 ⁡⁢⁣⁣```
 BACKEND_URL=http://localhost:5000
+# optional: GitHub repo used by the auto‑updater; override in code or set via UPDATE_REPO
+# UPDATE_REPO=yourUser/yourRepo
 ```⁡
 ---
 
@@ -174,3 +178,25 @@ VITE_SOCKET_URL=http://localhost:5000
 - **Half-Day**: < 4 hours active time
 - **Status Types**: full_day, half_day, absent, non_working
 ⁡
+
+Attendance calculation 2 steps mein hota hai:
+1. Calculate Attendance (Server/controllers/attendance.controller.js:6-77)
+Har employee ke liye har din ye check hota hai:
+- Activity records find kiye jate hain us din ke liye
+- Weekend (Sat-Sun) ko non_working mark kiya jata hai
+- Activities milne par → workCalculator.js se summary calculate hota hai
+2. Full Day vs Half Day (Server/utils/workCalculator.js:82-84)
+const HALF_DAY_ACTIVE_HOURS = 4; // <4h active => half day
+const halfDay = activeHours < HALF_DAY_ACTIVE_HOURS;
+Logic:
+- Active time (onlineTime - idleTime) < 4 hours → Half Day
+- Active time >= 4 hours → Full Day
+- Koi activity nahi → Absent
+Office timing: 10:30 AM se 6:30 PM
+3. Summary (Server/controllers/attendance.controller.js:115-124)
+const presentDays = full_day + half_day;
+const absentDays = absent;
+Attendance report mein:
+- Present Days = Full Day + Half Day
+- Absent Days = sirf 'absent' status wale din
+

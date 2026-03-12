@@ -39,13 +39,25 @@ function Attendance() {
     calculateMutation.mutate({ startDate, endDate });
   };
 
-  const exportCSV = () => {
-    const link = document.createElement("a");
-    link.href = `/api/attendance/export?startDate=${startDate}&endDate=${endDate}`;
-    link.target = "_blank";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const exportCSV = async () => {
+    console.log('Export CSV called with:', startDate, endDate);
+    if (!startDate || !endDate) {
+      toast.error('Please select date range');
+      return;
+    }
+    try {
+      const response = await attendanceApi.exportCSV(startDate, endDate);
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `attendance_${startDate}_${endDate}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch{
+      toast.error("Failed to export CSV");
+    }
   };
 
   const formatDate = (dateStr) => {

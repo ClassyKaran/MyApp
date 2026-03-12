@@ -3,12 +3,20 @@ import Activity from '../models/Activity.model.js';
 import Attendance from '../models/Attendance.model.js';
 import { calculateDailySummary } from '../utils/workCalculator.js';
 
+function toLocalDateString(date) {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export const calculateAttendance = async (req, res, next) => {
   try {
     const { startDate, endDate } = req.body;
-    const start = startDate ? new Date(startDate) : new Date();
+    const start = startDate ? new Date(startDate + 'T00:00:00') : new Date();
     start.setHours(0, 0, 0, 0);
-    const end = endDate ? new Date(endDate) : new Date();
+    const end = endDate ? new Date(endDate + 'T00:00:00') : new Date();
     end.setHours(23, 59, 59, 999);
 
     const employees = await Employee.find();
@@ -80,9 +88,9 @@ export const getAttendance = async (req, res, next) => {
   try {
     const { startDate, endDate } = req.query;
     
-    const start = startDate ? new Date(startDate) : new Date();
+    const start = startDate ? new Date(startDate + 'T00:00:00') : new Date();
     start.setHours(0, 0, 0, 0);
-    const end = endDate ? new Date(endDate) : new Date();
+    const end = endDate ? new Date(endDate + 'T00:00:00') : new Date();
     end.setHours(23, 59, 59, 999);
 
     const employees = await Employee.find();
@@ -104,9 +112,9 @@ export const getAttendance = async (req, res, next) => {
 
       const attendanceByDate = {};
       dateRange.forEach(date => {
-        const dateStr = date.toISOString().split('T')[0];
+        const dateStr = toLocalDateString(date);
         const record = empAttendance.find(att => {
-          const attDate = new Date(att.date).toISOString().split('T')[0];
+          const attDate = toLocalDateString(att.date);
           return attDate === dateStr;
         });
         attendanceByDate[dateStr] = record || null;
@@ -128,7 +136,7 @@ export const getAttendance = async (req, res, next) => {
 
     res.json({ 
       employees: result, 
-      dateRange: dateRange.map(d => d.toISOString().split('T')[0]) 
+      dateRange: dateRange.map(d => toLocalDateString(d)) 
     });
   } catch (error) {
     next(error);
@@ -138,13 +146,22 @@ export const getAttendance = async (req, res, next) => {
 export const exportAttendanceCSV = async (req, res, next) => {
   try {
     const { startDate, endDate } = req.query;
+    console.log('Export CSV - startDate:', startDate, 'endDate:', endDate);
     
-    const start = startDate ? new Date(startDate) : new Date();
+    if (!startDate || !endDate) {
+      return res.status(400).json({ message: 'startDate and endDate are required' });
+    }
+
+    const start = new Date(startDate + 'T00:00:00');
     start.setHours(0, 0, 0, 0);
-    const end = endDate ? new Date(endDate) : new Date();
+    const end = new Date(endDate + 'T00:00:00');
     end.setHours(23, 59, 59, 999);
 
+    console.log('Date range:', start, 'to', end);
+
     const employees = await Employee.find();
+    console.log('Employees found:', employees.length);
+    
     const attendanceRecords = await Attendance.find({
       date: { $gte: start, $lte: end }
     }).populate('employee', 'hostname');
@@ -158,10 +175,11 @@ export const exportAttendanceCSV = async (req, res, next) => {
 
     let csv = 'Employee Name,Expected Days,Present Days,Absent Days';
     dateRange.forEach(date => {
-      const dateStr = new Date(date).toLocaleDateString('en-GB', { 
-        day: '2-digit', month: 'short', year: 'numeric' 
-      });
-      csv += `,${dateStr}`;
+      const day = String(date.getDate()).padStart(2, '0');
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const month = monthNames[date.getMonth()];
+      const dateStr = `${day} ${month}`;
+      csv += `,"${dateStr}"`;
     });
     csv += '\n';
 
@@ -177,9 +195,9 @@ export const exportAttendanceCSV = async (req, res, next) => {
       let row = `${employee.hostname},${dateRange.length},${presentDays + halfDays},${absentDays}`;
 
       dateRange.forEach(date => {
-        const dateStr = date.toISOString().split('T')[0];
+        const dateStr = toLocalDateString(date);
         const record = empAttendance.find(att => {
-          const attDate = new Date(att.date).toISOString().split('T')[0];
+          const attDate = toLocalDateString(att.date);
           return attDate === dateStr;
         });
         
@@ -194,16 +212,18 @@ export const exportAttendanceCSV = async (req, res, next) => {
           if (dayOfWeek === 0 || dayOfWeek === 6) status = 'Non Working';
         }
         
-        row += `,${status}`;
+        row += `,"${status}"`;
       });
 
       csv += row + '\n';
     });
 
-    res.setHeader('Content-Type', 'text/csv');
+    console.log('CSV generated, length:', csv.length);
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
     res.setHeader('Content-Disposition', 'attachment; filename=attendance.csv');
     res.send(csv);
   } catch (error) {
+    console.error('Export CSV error:', error);
     next(error);
   }
 };

@@ -35,6 +35,20 @@ app.get("/", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+app.post('/api/live-screen/request', (req, res) => {
+  const { hostname } = req.body;
+  if (!hostname) {
+    return res.status(400).json({ message: 'Hostname is required' });
+  }
+  io.emit('request-screen-capture', { hostname });
+  res.json({ success: true, message: `Screen capture requested for ${hostname}` });
+});
+
+app.post('/api/live-screen/stop', (req, res) => {
+  io.emit('stop-screen-capture');
+  res.json({ success: true, message: 'Screen capture stopped' });
+});
+
 setInterval(async () => {
   try {
     const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);

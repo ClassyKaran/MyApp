@@ -3,19 +3,31 @@ import EmployeeList from '../components/EmployeeList';
 import StatusCard from '../components/StatusCard';
 import ActivityChart from '../components/ActivityChart';
 import ScreenshotGallery from '../components/ScreenshotGallery';
+import LiveScreenPopup from '../components/LiveScreenPopup';
 import { Users, ArrowLeft } from 'lucide-react';
 import { useEmployees } from '../hooks/useEmployees';
 import { useEmployeeSummary } from '../hooks/useEmployeeSummary';
+import { useLiveScreen } from '../hooks/useLiveScreen';
 
 
 export default function Employees() {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [liveScreenEmployee, setLiveScreenEmployee] = useState(null);
   const { data: employees = [], isLoading: loading } = useEmployees();
   const { data: summary } = useEmployeeSummary(selectedEmployee?.hostname);
-
+  const { screenData, isStreaming, startLiveScreen, stopLiveScreen } = useLiveScreen(liveScreenEmployee?.hostname);
 
   const handleSelectEmployee = (employee) => {
     setSelectedEmployee(employee);
+  };
+
+  const handleViewLiveScreen = (employee) => {
+    setLiveScreenEmployee(employee);
+  };
+
+  const handleCloseLiveScreen = () => {
+    stopLiveScreen();
+    setLiveScreenEmployee(null);
   };
 
   return (
@@ -25,7 +37,12 @@ export default function Employees() {
         {loading ? (
           <p className="text-gray-500">Loading employees...</p>
         ) : (
-          <EmployeeList employees={employees} selectedEmployee={selectedEmployee} onSelect={handleSelectEmployee} />
+          <EmployeeList 
+            employees={employees} 
+            selectedEmployee={selectedEmployee} 
+            onSelect={handleSelectEmployee}
+            onViewLiveScreen={handleViewLiveScreen}
+          />
         )}
       </div>
 
@@ -42,12 +59,17 @@ export default function Employees() {
           </div>
         )}
       </div>
+
+      {liveScreenEmployee && (
+        <LiveScreenPopup
+          employee={liveScreenEmployee}
+          screenData={screenData}
+          isStreaming={isStreaming}
+          onClose={handleCloseLiveScreen}
+          onStart={startLiveScreen}
+          onStop={stopLiveScreen}
+        />
+      )}
     </div>
   );
 }
-            
-                                         
-
-                         
-
-                 

@@ -5,11 +5,19 @@ const router = express.Router();
 
 router.post('/screenshot', async (req, res) => {
   try {
-    const { hostname, imageUrl } = req.body;
+    // payload may come from electron tracker or other source
+    const { hostname, imageUrl, image } = req.body;
+    const finalImageUrl = imageUrl || image;
+
+    console.log('▶ Screenshot upload:', {
+      hostname,
+      hasImageUrl: !!imageUrl,
+      hasImage: !!image,
+    });
     
     const screenshot = new Screenshot({
       hostname,
-      imageUrl,
+      imageUrl: finalImageUrl,
       timestamp: new Date()
     });
     

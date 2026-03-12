@@ -30,3 +30,13 @@ export const getStatus = async () => {
     throw error;
   }
 };
+
+export const requestLiveScreen = async (hostname) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/live-screen/request`, { hostname });
+    return response.data;
+  } catch (error) {
+    console.error("Live screen request error:", error.message);
+    throw error;
+  }
+};
