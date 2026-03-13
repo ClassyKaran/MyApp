@@ -12,7 +12,8 @@
   },
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "rebuild": "electron-rebuild -f -w sharp,active-win,uiohook-napi,screenshot-desktop"
   },
   "devDependencies": {
     "electron": "^39.7.0",
@@ -36,10 +37,18 @@
       "main.js",
       "preload.js",
       "src/**/*",
+      "Assets/**/*",
       "package.json"
     ],
+    "extraResources": [
+      {
+        "from": ".env",
+        "to": ".env"
+      }
+    ],
+    "asar": false,
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "Assets"
     },
     "win": {
       "target": "nsis"

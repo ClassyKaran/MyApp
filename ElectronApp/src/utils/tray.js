@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 let tray;
 
 export function createTray(mainWindow) {
-  tray = new Tray(path.join(__dirname, '..', '..', 'Assets', 'icon.ico'));
+  tray = new Tray(path.join(app.getAppPath(), 'Assets', 'icon.ico'));
 
   const contextMenu = Menu.buildFromTemplate([
     {

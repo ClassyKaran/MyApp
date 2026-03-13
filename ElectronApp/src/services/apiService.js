@@ -1,6 +1,14 @@
 import axios from "axios";
 
-const API_BASE_URL = process.env.BACKEND_URL || "http://localhost:5000/api";
+const getApiBaseUrl = () => {
+  const backendUrl = process.env.BACKEND_URL;
+  if (backendUrl) {
+    return backendUrl;
+  }
+  return "http://localhost:5000";
+};
+
+const API_BASE_URL = `${getApiBaseUrl()}/api`;
 
 export const postActivity = async (payload) => {
   try {

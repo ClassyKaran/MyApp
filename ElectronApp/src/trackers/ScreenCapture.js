@@ -1,6 +1,5 @@
 import { desktopCapturer } from 'electron'
 import io from 'socket.io-client'
-import { postScreenshot } from '../services/apiService.js'
 import { getHostname } from './systemInfo.js'
 
 const SOCKET_URL = (process.env.BACKEND_URL || 'http://localhost:5000')
@@ -45,17 +44,11 @@ async function captureScreen(targetHostname = null) {
 
     const hostnameToUse = targetHostname || currentTargetHostname || currentHostname;
     const payload = {
-      // backend/screenshot.routes.js expects `imageUrl` not `image`
       imageUrl: screen,
       hostname: hostnameToUse,
-      // timestamp is not used by the route, but keep it for debugging
       timestamp: new Date().toISOString(),
     };
 
-    // post to server so that gallery and history will work
-    await postScreenshot(payload);
-
-    // emit over socket for live view (frontend expects `image` here)
     socket.emit('screen-data', {
       image: screen,
       hostname: currentHostname,
