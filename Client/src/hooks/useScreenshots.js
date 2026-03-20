@@ -9,5 +9,9 @@ export function useScreenshots(hostname, limit = 20) {
     refetchInterval: 60000,
     retry: 1,
     staleTime: 30000,
+    select: (data) => {
+      if (Array.isArray(data)) return { screenshots: data, total: data.length };
+      return data;
+    },
   });
 }

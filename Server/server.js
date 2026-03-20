@@ -8,8 +8,10 @@ import { Server as IOServer } from "socket.io";
 import activityRoutes from './routes/activity.routes.js';
 import attendanceRoutes from './routes/attendance.routes.js';
 import screenshotRoutes from './routes/screenshot.routes.js';
+import authRoutes from './routes/auth.routes.js';
 import initSocket from './sockets/socket.js';
 import errorHandler from './middlewares/errorHandler.js';
+import Admin from './models/Admin.model.js';
 import Employee from './models/Employee.model.js';
 
 dotenv.config();
@@ -24,6 +26,7 @@ connectDB();
 app.use('/api', activityRoutes);
 app.use('/api', attendanceRoutes);
 app.use('/api', screenshotRoutes);
+app.use('/api/auth', authRoutes);
 
 const httpServer = http.createServer(app);
 const io = new IOServer(httpServer, 

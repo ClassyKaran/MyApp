@@ -52,7 +52,9 @@ router.get('/screenshots/:hostname', async (req, res) => {
       .skip(parseInt(offset))
       .limit(parseInt(limit));
 
-    res.json(screenshots);
+    const total = await Screenshot.countDocuments({ hostname });
+
+    res.json({ screenshots, total });
   } catch (error) {
     console.error('Screenshot fetch error:', error);
     res.status(500).json({ message: 'Failed to fetch screenshots' });

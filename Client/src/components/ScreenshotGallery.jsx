@@ -9,16 +9,19 @@ export default function ScreenshotGallery({ hostname }) {
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
   
-  const { data: initialScreenshots, isLoading } = useScreenshots(hostname, 20);
+  const { data: initialData, isLoading } = useScreenshots(hostname, 20);
 
   useEffect(() => {
-    if (initialScreenshots) {
-      setScreenshotList(initialScreenshots);
+    if (initialData) {
+      const { screenshots: imgs, total } = initialData;
+      setScreenshotList(imgs);
+      setTotalCount(total);
       setOffset(20);
-      setHasMore(initialScreenshots.length >= 20);
+      setHasMore(imgs.length >= 20 && imgs.length < total);
     }
-  }, [initialScreenshots]);
+  }, [initialData]);
 
   const screenshots = screenshotList;
   const [selectedIndex, setSelectedIndex] = useState(null);
@@ -38,7 +41,8 @@ export default function ScreenshotGallery({ hostname }) {
     if (loadingMore || !hasMore) return;
     setLoadingMore(true);
     try {
-      const data = await screenshotApi.getByHostnameOffset(hostname, offset, 20);
+      const response = await screenshotApi.getByHostnameOffset(hostname, offset, 20);
+      const data = Array.isArray(response) ? response : response.screenshots || [];
       if (data.length === 0) {
         setHasMore(false);
       } else {
@@ -84,7 +88,7 @@ export default function ScreenshotGallery({ hostname }) {
     <div className="bg-white rounded-lg shadow p-4">
       <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
         <Camera size={20} />
-        Screenshots ({screenshots.length})
+        Screenshots ({screenshots.length}{totalCount > 0 && screenshots.length < totalCount && ` / ${totalCount}`})
       </h3>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-96 overflow-y-auto">

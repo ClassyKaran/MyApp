@@ -1,3 +1,8 @@
+
+- Email: admin@kavyashift.com  
+- Password:Kavyashift@123
+
+
 # EmpMonitorDeskApp - Employee Activity Monitoring System
 
 A complete employee monitoring solution with desktop tracking app, backend API, and admin dashboard.
