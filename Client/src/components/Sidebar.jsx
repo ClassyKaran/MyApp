@@ -27,7 +27,7 @@ export default function Sidebar() {
       <div className={`bg-white md:shadow-md md:rounded-r-lg md:h-screen md:sticky md:top-0 ${open ? 'block' : 'hidden md:block'}`}>
         <div className="p-4 border-b border-gray-100 flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold">WorkTrack</h2>
+            <h2 className="text-lg font-semibold">KavyaShift</h2>
             <p className="text-xs text-gray-500">Admin</p>
           </div>
         </div>

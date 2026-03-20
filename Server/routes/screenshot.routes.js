@@ -29,16 +29,29 @@ router.post('/screenshot', async (req, res) => {
   }
 });
 
+router.get('/screenshots', async (req, res) => {
+  try {
+    const { limit = 100 } = req.query;
+    const screenshots = await Screenshot.find()
+      .sort({ timestamp: -1 })
+      .limit(parseInt(limit));
+    res.json(screenshots);
+  } catch (error) {
+    console.error('Screenshot fetch error:', error);
+    res.status(500).json({ message: 'Failed to fetch screenshots' });
+  }
+});
+
 router.get('/screenshots/:hostname', async (req, res) => {
   try {
     const { hostname } = req.params;
     const { limit = 20, offset = 0 } = req.query;
-    
+
     const screenshots = await Screenshot.find({ hostname })
       .sort({ timestamp: -1 })
       .skip(parseInt(offset))
       .limit(parseInt(limit));
-    
+
     res.json(screenshots);
   } catch (error) {
     console.error('Screenshot fetch error:', error);

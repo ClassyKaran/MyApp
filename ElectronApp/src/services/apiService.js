@@ -5,7 +5,7 @@ const getApiBaseUrl = () => {
   if (backendUrl) {
     return backendUrl;
   }
-  return "http://localhost:5000";
+  return "https://desktopappserver.onrender.com";
 };
 
 const API_BASE_URL = `${getApiBaseUrl()}/api`;

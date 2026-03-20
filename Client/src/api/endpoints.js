@@ -31,9 +31,11 @@ export const employeeApi = {
 };
 
 export const screenshotApi = {
-  getByHostname: (hostname, limit = 20) => 
+  getAll: (limit = 100) =>
+    apiClient.get(`/screenshots?limit=${limit}`).then(res => res.data),
+  getByHostname: (hostname, limit = 20) =>
     apiClient.get(`/screenshots/${hostname}?limit=${limit}`).then(res => res.data),
-  getByHostnameOffset: (hostname, offset = 0, limit = 20) => 
+  getByHostnameOffset: (hostname, offset = 0, limit = 20) =>
     apiClient.get(`/screenshots/${hostname}?offset=${offset}&limit=${limit}`).then(res => res.data),
 };
 

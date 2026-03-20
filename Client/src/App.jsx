@@ -1,12 +1,11 @@
-
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Wifi, WifiOff, Cpu } from 'lucide-react';
-import { useSocket } from './hooks/useSocket';
-import Dashboard from './pages/Dashboard';
-import Employees from './pages/Employees';
-import Sidebar from './components/Sidebar';
-import './App.css';
-import Attendance from './pages/Attendance';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Wifi, WifiOff, Cpu, Bell, Settings } from "lucide-react";
+import { useSocket } from "./hooks/useSocket";
+import Dashboard from "./pages/Dashboard";
+import Employees from "./pages/Employees";
+import Sidebar from "./components/Sidebar";
+import "./App.css";
+import Attendance from "./pages/Attendance";
 
 function AppContent() {
   const { socketConnected } = useSocket();
@@ -14,48 +13,47 @@ function AppContent() {
   return (
     <BrowserRouter>
       <div className="min-h-screen bg-gray-50 flex">
-        
         <Sidebar />
 
         <div className="flex-1">
-          
           {/* Header */}
-          <header className="flex items-center justify-between px-4 py-3 border-b bg-white">
-            
-            <h1 className="text-lg font-semibold flex items-center gap-2">
-              <Cpu size={20} />
-              WorkTrack Lite Admin Dashboard
-            </h1>
+          <header className=" ">
+            <div className=" py-5 bg-blue-50 ">
+              <div className="px-5  mx-auto flex items-center justify-between">
+                <div>
+                  <h1 className="text-3xl font-bold text-blue-600">
+                    KavyaShift
+                  </h1>
+                  <p className="text-slate-500 mt-1">
+                    Employee Monitoring Dashboard
+                  </p>
+                </div>
 
-            <div className="flex items-center gap-1 text-sm text-gray-600">
-              {socketConnected ? (
-                <>
-                  <Wifi size={16} className="text-green-500" />
-                  Connected
-                </>
-              ) : (
-                <>
-                  <WifiOff size={16} className="text-red-500" />
-                  Disconnected
-                </>
-              )}
+                <button className="p-2 text-slate-500 hover:text-blue-600 transition-colors">
+                  {socketConnected ? (
+                    <>
+                      <Wifi size={16} className="text-green-500" />
+                      Connected
+                    </>
+                  ) : (
+                    <>
+                      <WifiOff size={16} className="text-red-500" />
+                      Disconnected
+                    </>
+                  )}
+                </button>
+              
+              </div>
             </div>
-
           </header>
 
           {/* Main Content */}
-          <main >
+          <main>
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/employees" element={<Employees />} />
-          
-              <Route
-                path="/Attendance"
-                element={
-                  
-                  <Attendance/>
-                }
-              />
+
+              <Route path="/Attendance" element={<Attendance />} />
               <Route
                 path="/settings"
                 element={
@@ -66,7 +64,6 @@ function AppContent() {
               />
             </Routes>
           </main>
-
         </div>
       </div>
     </BrowserRouter>
@@ -74,9 +71,7 @@ function AppContent() {
 }
 
 function App() {
-  return (
-    <AppContent />
-  );
+  return <AppContent />;
 }
 
 export default App;

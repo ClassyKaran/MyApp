@@ -1,94 +1,97 @@
-import React, { useState } from 'react';
-import EmployeeList from '../components/EmployeeList';
-import ActivityChart from '../components/ActivityChart';
-import StatusCard from '../components/StatusCard';
-import ScreenshotGallery from '../components/ScreenshotGallery';
-import { Users, ArrowLeft, Circle } from 'lucide-react';
+import React from 'react';
+import { Users, Clock, Monitor, Shield, Bell, Settings } from 'lucide-react';
 import { useEmployees } from '../hooks/useEmployees';
-import { useEmployeeSummary } from '../hooks/useEmployeeSummary';
-import { useSocket } from '../hooks/useSocket';
+import { useAllScreenshots } from '../hooks/useAllScreenshots';
 
-export default function Dashboard() {
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
-  useSocket();
+function Dashboard() {
+  const { data: employees = [] } = useEmployees();
+  const { data: screenshots = [] } = useAllScreenshots();
 
-  const { data: employees = [], isLoading: employeesLoading } = useEmployees();
-  const { data: summary } = useEmployeeSummary(selectedEmployee?.hostname);
 
-  const handleSelectEmployee = (employee) => {
-    setSelectedEmployee(employee);
-  };
 
   return (
-    <div className="dashboard min-h-screen bg-gray-100 p-4 md:p-6">  
-      <div className="max-w-7xl mx-auto">
-        {/* Summary Stats */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div className="min-h-screen bg-gray-100 py-5">
+      {/* Main Content */}
+      <div className="px-5 pb-8">
+        <div className="mx-auto">
 
-          <div className="bg-white rounded-lg shadow p-4 flex items-center gap-3 border-l-4 border-blue-500">
-            <Users className="text-blue-500" size={24} />
-            <div>
-              <p className="text-sm text-gray-600">Total Employees</p>
-              <p className="text-3xl font-bold text-gray-800">{employees.length}</p>
-            </div>
-          </div>
+      
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
 
-          <div className="bg-white rounded-lg shadow p-4 flex items-center gap-3 border-l-4 border-green-500">
-            <Circle className="text-green-500" size={24} />
-            <div>
-              <p className="text-sm text-gray-600">Online</p>
-              <p className="text-3xl font-bold text-green-600">{employees.filter((e) => e.status === 'online').length}</p>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-4 flex items-center gap-3 border-l-4 border-yellow-500">
-            <Circle className="text-yellow-500" size={24} />
-            <div>
-              <p className="text-sm text-gray-600">Idle</p>
-              <p className="text-3xl font-bold text-yellow-600">{employees.filter((e) => e.status === 'idle').length}</p>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow p-4 flex items-center gap-3 border-l-4 border-red-500">
-            <Circle className="text-red-500" size={24} />
-            <div>
-              <p className="text-sm text-gray-600">Offline</p>
-              <p className="text-3xl font-bold text-red-600">{employees.filter((e) => e.status === 'offline').length}</p>
-            </div>
-          </div>
-
-        </div>
-
-
-
-        {/* Main Content */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Employee List */}
-          <div className="md:col-span-1 bg-white rounded-lg shadow p-4 md:p-6">
-            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><Users size={24} />Employees</h2>
-            {employeesLoading ? (
-              <p className="text-gray-500">Loading employees...</p>
-            ) : (
-              <EmployeeList employees={employees} selectedEmployee={selectedEmployee} onSelect={handleSelectEmployee} />
-            )}
-          </div>
-
-          {/* Selected Employee Details */}
-          <div className="md:col-span-2 space-y-4    ">
-            {selectedEmployee ? (
-              <>
-                <StatusCard employee={selectedEmployee} />
-                {summary && <ActivityChart summary={summary} />}
-                <ScreenshotGallery hostname={selectedEmployee.hostname} />
-              </>
-            ) : (
-              <div className="bg-white rounded-lg shadow p-6 text-center">
-                <p className="text-gray-500 flex items-center gap-1"><ArrowLeft size={16} />Select an employee to view details</p>
+            <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-blue-100 rounded-lg">
+                  <Users className="text-blue-600" size={20} />
+                </div>
+                <span className="text-slate-500 text-sm">Employees</span>
               </div>
-            )}
+              <p className="text-3xl font-bold text-slate-800">{employees.length}</p>
+            </div>
+
+            <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-green-100 rounded-lg">
+                  <Users className="text-green-600" size={20} />
+                </div>
+                <span className="text-slate-500 text-sm">Online</span>
+              </div>
+              <p className="text-3xl font-bold text-slate-800">{employees.filter((e) => e.status === 'online').length}</p>
+            </div>
+
+            <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-purple-100 rounded-lg">
+                  <Clock className="text-purple-600" size={20} />
+                </div>
+                <span className="text-slate-500 text-sm">Work Hours</span>
+              </div>
+              <p className="text-3xl font-bold text-slate-800">8h</p>
+            </div>
+
+            <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="p-2 bg-orange-100 rounded-lg">
+                  <Monitor className="text-orange-600" size={20} />
+                </div>
+                <span className="text-slate-500 text-sm">Screenshots</span>
+              </div>
+              <p className="text-3xl font-bold text-slate-800">{screenshots.length}</p>
+            </div>
           </div>
+
+          {/* Quick Links */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+              <div className="p-3 bg-blue-100 rounded-xl w-fit mb-4">
+                <Users className="text-blue-600" size={24} />
+              </div>
+              <h3 className="text-slate-800 font-bold text-lg mb-2">Manage Employees</h3>
+              <p className="text-slate-500 text-sm">View and manage your team members, track their status and activity.</p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+              <div className="p-3 bg-green-100 rounded-xl w-fit mb-4">
+                <Monitor className="text-green-600" size={24} />
+              </div>
+              <h3 className="text-slate-800 font-bold text-lg mb-2">View Reports</h3>
+              <p className="text-slate-500 text-sm">Access detailed reports and analytics about employee productivity.</p>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+              <div className="p-3 bg-purple-100 rounded-xl w-fit mb-4">
+                <Shield className="text-purple-600" size={24} />
+              </div>
+              <h3 className="text-slate-800 font-bold text-lg mb-2">Security Settings</h3>
+              <p className="text-slate-500 text-sm">Configure monitoring settings and privacy controls for your workspace.</p>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
   );
 }
+
+export default Dashboard;

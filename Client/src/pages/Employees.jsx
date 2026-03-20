@@ -8,6 +8,7 @@ import { Users, ArrowLeft } from 'lucide-react';
 import { useEmployees } from '../hooks/useEmployees';
 import { useEmployeeSummary } from '../hooks/useEmployeeSummary';
 import { useLiveScreen } from '../hooks/useLiveScreen';
+import {   Circle } from 'lucide-react';
 
 
 export default function Employees() {
@@ -31,8 +32,47 @@ export default function Employees() {
   };
 
   return (
+  <div className="dashboard min-h-screen bg-gray-100 px-5 md:p-5">  
+      <div className=" mx-auto">
+        {/* Summary Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+
+          <div className="bg-white rounded-lg shadow p-4 flex items-center gap-3 border-l-4 border-blue-500">
+            <Users className="text-blue-500" size={24} />
+            <div>
+              <p className="text-sm text-gray-600">Total Employees</p>
+              <p className="text-3xl font-bold text-gray-800">{employees.length}</p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-4 flex items-center gap-3 border-l-4 border-green-500">
+            <Circle className="text-green-500" size={24} />
+            <div>
+              <p className="text-sm text-gray-600">Online</p>
+              <p className="text-3xl font-bold text-green-600">{employees.filter((e) => e.status === 'online').length}</p>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-4 flex items-center gap-3 border-l-4 border-yellow-500">
+            <Circle className="text-yellow-500" size={24} />
+            <div>
+              <p className="text-sm text-gray-600">Idle</p>
+              <p className="text-3xl font-bold text-yellow-600">{employees.filter((e) => e.status === 'idle').length}</p>
+            </div>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow p-4 flex items-center gap-3 border-l-4 border-red-500">
+            <Circle className="text-red-500" size={24} />
+            <div>
+              <p className="text-sm text-gray-600">Offline</p>
+              <p className="text-3xl font-bold text-red-600">{employees.filter((e) => e.status === 'offline').length}</p>
+            </div>
+          </div>
+
+        </div>
+
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="md:col-span-2 bg-white rounded-lg shadow p-4 md:p-6">
+       <div className="md:col-span-1 bg-white rounded-lg shadow p-4 md:p-6">
         <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><Users size={24} />Employees</h2>
         {loading ? (
           <p className="text-gray-500">Loading employees...</p>
@@ -46,7 +86,7 @@ export default function Employees() {
         )}
       </div>
 
-      <div className="space-y-4">
+      <div className="md:col-span-2 space-y-4 ">
         {selectedEmployee ? (
           <>
             <StatusCard employee={selectedEmployee} />
@@ -70,6 +110,8 @@ export default function Employees() {
           onStop={stopLiveScreen}
         />
       )}
+    </div>
+    </div>
     </div>
   );
 }
